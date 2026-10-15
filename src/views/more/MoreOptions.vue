@@ -192,7 +192,7 @@
 
         <!-- 充值选项，仅Xiao-V2board面板显示 -->
 
-        <div v-if="shouldShowWalletCard && isXiaoPanel" class="stats-card" @click="$router.push('/wallet/deposit')">
+        <div v-if="shouldShowWalletCard && showRechargeCard && (isXiaoPanel || isXbPanel)" class="stats-card" @click="$router.push('/wallet/deposit')">
 
           <div class="stats-icon">
 
@@ -356,7 +356,7 @@ import DomainAuthAlert from '@/components/common/DomainAuthAlert.vue';
 
 
 
-import { TRAFFICLOG_CONFIG, isXiaoV2board, MORE_PAGE_CONFIG, NAVIGATION_CONFIG } from '@/utils/baseConfig';
+import { TRAFFICLOG_CONFIG, isXiaoV2board, isXboard, MORE_PAGE_CONFIG, NAVIGATION_CONFIG, WALLET_CONFIG } from '@/utils/baseConfig';
 
 
 
@@ -377,6 +377,8 @@ const isSmallScreen = ref(false);
 const showTrafficLog = ref(false);
 
 const isXiaoPanel = isXiaoV2board();
+const isXbPanel = isXboard();
+const showRechargeCard = WALLET_CONFIG.showRechargeCard !== false;
 
 
 

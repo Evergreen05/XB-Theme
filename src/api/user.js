@@ -1,6 +1,7 @@
 ﻿
 
 import request from './request';
+import { isXboard } from '@/utils/baseConfig';
 
 
 
@@ -41,13 +42,16 @@ export function getIpLocationInfo() {
 
 export function redeemGiftCard(giftcard) {
 
+    // Xboard 与 Xiao-V2board 的礼品卡接口路径/参数不同
+    const isXb = isXboard();
+
     return request({
 
-        url: '/user/redeemgiftcard',
+        url: isXb ? '/user/gift-card/redeem' : '/user/redeemgiftcard',
 
         method: 'post',
 
-        data: { giftcard }
+        data: isXb ? { code: giftcard } : { giftcard }
 
     });
 

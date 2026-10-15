@@ -1574,7 +1574,10 @@ const redeemGiftCard = async () => {
 
     console.error('Failed to redeem gift card:', err);
 
-    showError(t('profile.giftCardError'));
+    // 优先展示后端返回的具体失败原因（如：兑换码不存在/已使用/已过期）
+    const backendMsg = err?.response?.message || err?.response?.data?.message || err?.message;
+
+    showError(backendMsg || t('profile.giftCardError'));
 
   } finally {
 

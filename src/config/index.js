@@ -6,7 +6,7 @@
 
 export const config  = {
     // 面板类型配置 - 请选择您使用的面板类型
-    PANEL_TYPE: 'Xiao-V2board', // 可选值: 'V2board', 'Xiao-V2board' 或 'Xboard'
+    PANEL_TYPE: 'Xboard', // 可选值: 'V2board', 'Xiao-V2board' 或 'Xboard'
     // 说明:
     // 1. V2board: 标准V2board面板，使用默认请求格式
     // 2. Xiao-V2board: Xiao修改版面板，使用特殊格式的请求参数
@@ -29,9 +29,7 @@ export const config  = {
         // 支持字符串形式(单个API地址)或数组形式(多个备选API地址)
         // 多个地址时，会按顺序检测可用性，并使用第一个可用的地址
         staticBaseUrl: [
-            'https://skhsn6q4pnv95.ezdemo.xyz/api/v1',
-            'https://skhsn6q4pnv95.ezdemo.xyz/api/v1',
-            'https://gy1v06omopzc8.ezdemo.xyz/api/v1'
+            'http://8.216.31.56:7001/api/v1'
         ],
       
         // 自动获取模式配置 (urlMode = 'auto'时使用)
@@ -174,7 +172,7 @@ export const config  = {
     // 商店页面配置
     SHOP_CONFIG: {
         // 是否在商店导航上显示热销标记
-        showHotSaleBadge: false,
+        showHotSaleBadge: true,
 
         // 是否显示套餐特性卡片 (true=显示, false=隐藏)
         showPlanFeatureCards: true, // 默认显示
@@ -335,7 +333,7 @@ export const config  = {
     // 用户中心页面配置
     PROFILE_CONFIG: {
         // 是否显示礼品卡兑换栏目 (true=显示, false=隐藏)
-        showGiftCardRedeem: false, // 只有Xiao-V2board支持礼品卡兑换
+        showGiftCardRedeem: true, // 礼品卡兑换（Xboard 亦支持 /api/v1/passport/gift-card 系列接口）
 
         // 是否显示最近登录设备栏目 (true=显示, false=隐藏)
         showRecentDevices: true
@@ -428,6 +426,12 @@ export const config  = {
 
     // 充值相关配置
     WALLET_CONFIG: {
+        // 是否显示钱包入口（头像下拉"我的钱包"、"更多"页入口、导航 wallet 项）
+        showWalletEntry: true,
+
+        // 是否在"更多"页显示充值余额卡片
+        showRechargeCard: true,
+
         // 预设充值金额选项（单位：元）
         presetAmounts: [6, 30, 68, 128, 256, 328, 648, 1280],
 
@@ -443,7 +447,7 @@ export const config  = {
     // 邀请页面配置
     INVITE_CONFIG: {
         // 是否在导航栏的邀请按钮上显示返利标记
-        showCommissionBadge: false,
+        showCommissionBadge: true,
 
         // 返佣记录每页显示数量（最小值为10，API限制每次请求最少需要返回10条记录）
         recordsPerPage: 10,
@@ -528,14 +532,17 @@ export const config  = {
         // 是否显示节点详细信息（主机和端口）
         showNodeDetails: false,
 
-        // 是否允许查看节点详细信息（控制详情按钮和模态框）
-        allowViewNodeInfo: true
+        // 是否允许查看节点详细信息（控制详情按钮和模态框，关闭后节点卡片不显示三个点按钮）
+        allowViewNodeInfo: false
     },
 
     // 客服系统配置
     CUSTOMER_SERVICE_CONFIG: {
         // 是否启用客服系统
         enabled: false,
+
+        // 自定义客服外链（后台"客服链接"），配置后图标点击新窗口打开该地址
+        customUrl: '',
 
         // 客服系统类型: 'crisp' 或 'other'
         // 注意：当客服类型为crisp时，系统会自动向Crisp传递用户数据
@@ -571,7 +578,6 @@ export const config  = {
     // 设置导航栏第三个位置显示的内容
     NAVIGATION_CONFIG: {
         // 可选值: 'invite', 'docs', 'tickets', 'nodes', 'orders', 'traffic', 'wallet', 'profile'
-        // 'wallet' 只有 xiao-v2board 支持 非 xiao-v2board 面板请勿设置为 wallet
         // 默认值为 'invite'
         thirdNavItem: 'invite',
 

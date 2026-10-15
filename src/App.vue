@@ -132,7 +132,7 @@ export default {
     const cachedRoutes = computed(() => pageCache.getCachedRoutes());
     
     const customerServiceConfig = computed(() => CUSTOMER_SERVICE_CONFIG);
-    
+
     router.beforeEach((to, from, next) => {
       if (to.meta.keepAlive && to.name) {
         pageCache.addRouteToCache(to.name);

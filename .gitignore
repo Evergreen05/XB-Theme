@@ -6,6 +6,11 @@ package-lock.json
 dist/
 build/
 
+# 忽略本地构建产物与临时文件
+*.zip
+.pkg/
+_tmp_*.php
+
 # 忽略日志文件
 *.log
 

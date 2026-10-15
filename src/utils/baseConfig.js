@@ -4,11 +4,108 @@
 
 import {getAvailableApiUrl} from '@/utils/apiAvailabilityChecker';
 
-const getConfig = (key, defaultValue) => {
-    if (typeof window !== 'undefined' && window.EZ_CONFIG && window.EZ_CONFIG[key] !== undefined) {
-        return window.EZ_CONFIG[key];
+/**
+ * 读取 Xboard 后台"主题设置"下发的配置（dashboard.blade.php 注入的 window.EZ_THEME_SETTINGS）
+ *
+ * 后台表单（react-hook-form）与后端 updateConfig 的 only() 都只支持"平键"，
+ * 因此 config.json 的 field_name 一律为平键（如 ez_site_name），
+ * 通过 EZ_FIELD_MAP 映射回内部配置的点路径（如 SITE_CONFIG.siteName）。
+ */
+const EZ_FIELD_MAP = {
+    ez_primary_color: 'DEFAULT_CONFIG.primaryColor',
+    ez_default_theme: 'DEFAULT_CONFIG.defaultTheme',
+    ez_site_name: 'SITE_CONFIG.siteName',
+    ez_site_description: 'SITE_CONFIG.siteDescription',
+    ez_copyright: 'SITE_CONFIG.copyright',
+    ez_landing_text_zh: 'SITE_CONFIG.landingText.zh-CN',
+    ez_api_url_mode: 'API_CONFIG.urlMode',
+    ez_custom_html: 'EZ_CUSTOM_HTML',
+    // 开关与公告
+    ez_show_giftcard: 'PROFILE_CONFIG.showGiftCardRedeem',
+    ez_show_wallet_entry: 'WALLET_CONFIG.showWalletEntry',
+    ez_show_recharge_card: 'WALLET_CONFIG.showRechargeCard',
+    ez_service_url: 'CUSTOMER_SERVICE_CONFIG.customUrl',
+    // 公告 = 商店页"用户须知"弹窗（SHOP_CONFIG.popup，进商店时弹出的那个）
+    ez_announcement_enabled: 'SHOP_CONFIG.popup.enabled',
+    ez_announcement_title: 'SHOP_CONFIG.popup.title',
+    ez_announcement_content: 'SHOP_CONFIG.popup.content',
+    // 节点详情按钮（三个点）
+    ez_node_detail_btn: 'NODES_CONFIG.allowViewNodeInfo',
+    // 仪表盘官方客户端下载链接
+    ez_client_ios: 'CLIENT_CONFIG.clientLinks.ios',
+    ez_client_android: 'CLIENT_CONFIG.clientLinks.android',
+    ez_client_macos: 'CLIENT_CONFIG.clientLinks.macos',
+    ez_client_windows: 'CLIENT_CONFIG.clientLinks.windows',
+    ez_client_openwrt: 'CLIENT_CONFIG.clientLinks.openwrt',
+    ez_client_linux: 'CLIENT_CONFIG.clientLinks.linux'
+};
+
+// 后台 select 存的是字符串 "true"/"false"，需转成真布尔（否则 v-if="false" 恒真）
+const EZ_BOOLEAN_FIELDS = new Set([
+    'ez_show_giftcard',
+    'ez_show_wallet_entry',
+    'ez_show_recharge_card',
+    'ez_announcement_enabled',
+    'ez_node_detail_btn'
+]);
+
+const coerceBoolean = (field, value) => {
+    if (!EZ_BOOLEAN_FIELDS.has(field)) return value;
+    if (value === 'true' || value === true) return true;
+    if (value === 'false' || value === false) return false;
+    return value;
+};
+
+// 平键/点路径 -> 嵌套对象（值为 null/空串时跳过，回落到打包默认值）
+const buildNested = (source) => {
+    const out = {};
+    let hasAny = false;
+    Object.keys(source).forEach((rawField) => {
+        let value = source[rawField];
+        if (value === null || value === undefined || value === '') return;
+        value = coerceBoolean(String(rawField), value);
+        const path = EZ_FIELD_MAP[rawField] || String(rawField);
+        const parts = path.split('.');
+        let node = out;
+        for (let i = 0; i < parts.length - 1; i += 1) {
+            if (typeof node[parts[i]] !== 'object' || node[parts[i]] === null || Array.isArray(node[parts[i]])) {
+                node[parts[i]] = {};
+            }
+            node = node[parts[i]];
+        }
+        node[parts[parts.length - 1]] = value;
+        hasAny = true;
+    });
+    return hasAny ? out : null;
+};
+
+let adminSettingsCache;
+const getAdminThemeSettings = () => {
+    if (adminSettingsCache !== undefined) return adminSettingsCache;
+    adminSettingsCache = null;
+    if (typeof window !== 'undefined' && window.EZ_THEME_SETTINGS && typeof window.EZ_THEME_SETTINGS === 'object') {
+        adminSettingsCache = buildNested(window.EZ_THEME_SETTINGS);
     }
-    return defaultValue;
+    return adminSettingsCache;
+};
+
+const getConfig = (key, defaultValue) => {
+    let value = defaultValue;
+    if (typeof window !== 'undefined' && window.EZ_CONFIG && window.EZ_CONFIG[key] !== undefined) {
+        value = window.EZ_CONFIG[key];
+    }
+    // 后台主题设置优先级最高：对象则深合并覆盖，标量则整体替换
+    const admin = getAdminThemeSettings();
+    if (admin && admin[key] !== undefined) {
+        const over = admin[key];
+        if (value && typeof value === 'object' && !Array.isArray(value) &&
+            over && typeof over === 'object' && !Array.isArray(over)) {
+            value = mergeDeep(value, over);
+        } else {
+            value = over;
+        }
+    }
+    return value;
 };
 
 const mergeDeep = (target, source) => {
@@ -72,9 +169,10 @@ export const getApiBaseUrl = () => {
             return formattedUrl + formattedPath;
         }
 
-        // 然后检查是否存在API_CONFIG
-        if (window.EZ_CONFIG.API_CONFIG) {
-            const apiConfig = window.EZ_CONFIG.API_CONFIG;
+        // 然后检查是否存在API_CONFIG（走 getConfig，以便后台主题设置可覆盖 urlMode）
+        const resolvedApiConfig = getConfig('API_CONFIG');
+        if (resolvedApiConfig) {
+            const apiConfig = resolvedApiConfig;
 
             // 静态URL模式
             if (apiConfig.urlMode === 'static' && apiConfig.staticBaseUrl) {
@@ -735,6 +833,12 @@ export const isBrowserRestricted = () => {
  * 充值相关配置
  */
 const DEFAULT_WALLET_CONFIG = {
+    // 是否显示钱包入口（头像下拉"我的钱包"、"更多"页入口、导航 wallet 项）
+    showWalletEntry: true,
+
+    // 是否在"更多"页显示充值余额卡片
+    showRechargeCard: true,
+
     // 预设充值金额选项（单位：元）
     presetAmounts: [6, 30, 68, 128, 256, 328, 648, 1280],
 
@@ -787,6 +891,9 @@ export const NODES_CONFIG = mergeDeep(DEFAULT_NODES_CONFIG, getConfig('NODES_CON
 const DEFAULT_CUSTOMER_SERVICE_CONFIG = {
     // 是否启用客服系统
     enabled: false,
+
+    // 自定义客服外链（后台"客服链接"），配置后图标点击新窗口打开该地址
+    customUrl: '',
 
     // 客服系统类型: 'crisp' 或 'other'
     type: 'crisp',

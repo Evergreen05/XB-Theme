@@ -2,7 +2,7 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-import { SITE_CONFIG, DEFAULT_CONFIG, isBrowserRestricted, TRAFFICLOG_CONFIG, isXiaoV2board, AUTH_LAYOUT_CONFIG, NAVIGATION_CONFIG } from '@/utils/baseConfig';
+import { SITE_CONFIG, DEFAULT_CONFIG, isBrowserRestricted, TRAFFICLOG_CONFIG, isXiaoV2board, isXboard, AUTH_LAYOUT_CONFIG, NAVIGATION_CONFIG } from '@/utils/baseConfig';
 
 import i18n from '@/i18n';
 import { reloadMessages } from '@/i18n';
@@ -586,7 +586,7 @@ const routes = [
 
         beforeEnter: (to, from, next) => {
 
-          if (!isXiaoV2board()) {
+          if (!isXiaoV2board() && !isXboard()) {
 
             next('/dashboard');
 

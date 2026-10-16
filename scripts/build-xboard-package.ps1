@@ -3,7 +3,7 @@
 param(
     [switch]$SkipBuild,          # 跳过 npm run build（dist 已最新时）
     [string]$ThemeName = "EZTheme",
-    [string]$Version = "2.5.3",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
+    [string]$Version = "2.5.4",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
     [string]$ApiUrlMode = "auto" # auto=跟随当前域名 | static=写死 staticBaseUrl
 )
 
@@ -83,6 +83,11 @@ $config = @{
                 "#f97316" = "活力橙"; "#ef4444" = "警示红"; "#0e7490" = "深青"
             }
             default_value = "#355cc2"
+        }
+        @{
+            label = "自定义主题色"; field_name = "ez_primary_color_custom"; field_type = "input"
+            placeholder = "可选。填写 16 进制色值如 #7c3aed，留空则使用上方下拉选的预设色"
+            default_value = ""
         }
         @{
             label = "默认外观模式"; field_name = "ez_default_theme"; field_type = "select"

@@ -13,8 +13,9 @@ import {getAvailableApiUrl} from '@/utils/apiAvailabilityChecker';
  */
 const EZ_FIELD_MAP = {
     ez_primary_color: 'DEFAULT_CONFIG.primaryColor',
-    ez_default_theme: 'DEFAULT_CONFIG.defaultTheme',
+    ez_primary_color_custom: 'DEFAULT_CONFIG.primaryColorCustom',
     ez_logo_url: 'SITE_CONFIG.logoUrl',
+    ez_default_theme: 'DEFAULT_CONFIG.defaultTheme',
     ez_site_name: 'SITE_CONFIG.siteName',
     ez_site_description: 'SITE_CONFIG.siteDescription',
     ez_copyright: 'SITE_CONFIG.copyright',
@@ -338,12 +339,24 @@ const DEFAULT_BASE_CONFIG = {
 
     // 主题色 (16进制颜色值) TODO
     primaryColor: '#00947c',
+    // 后台可填的自定义主题色（留空则用预设下拉色）
+    primaryColorCustom: '',
 
     // 是否启用落地页 (true=启用, false=禁用) TODO
     enableLandingPage: true
 };
 
+// 校验 16 进制色值（#abc 简写与 #aabbcc 均合法）
+const isValidHexColor = (value) => {
+    return typeof value === 'string' && /^#?([a-f\d]{3}|[a-f\d]{6})$/i.test(value.trim());
+};
+
 export const DEFAULT_CONFIG = mergeDeep(DEFAULT_BASE_CONFIG, getConfig('DEFAULT_CONFIG'));
+
+// 自定义主题色优先级高于预设下拉色（仅在值合法时生效，非法值静默回退预设）
+if (isValidHexColor(DEFAULT_CONFIG.primaryColorCustom)) {
+    DEFAULT_CONFIG.primaryColor = DEFAULT_CONFIG.primaryColorCustom.trim();
+}
 
 /**
  * 支付相关配置
@@ -642,7 +655,11 @@ const hexToRgb = (hex) => {
             parseInt(result[3], 16)
         ];
     }
+
+    // 非法输入兜底：回退默认主题蓝，避免 rgb.join 抛错导致页面白屏
+    return [53, 92, 194];
 };
+
 
 /**
  * 计算主题相关的颜色

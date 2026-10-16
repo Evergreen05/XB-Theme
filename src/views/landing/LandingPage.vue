@@ -1,4 +1,4 @@
-﻿<template>
+<template>
 
   <div class="landing-page" :class="{ 'dark-theme': isDarkTheme }" @wheel="handleWheel" @scroll="handleScroll" ref="landingPageRef">
 
@@ -38,7 +38,7 @@
 
       <div class="site-title">
 
-        <img v-if="siteConfig.showLogo" src="/images/logo.png" alt="Logo" class="site-logo-img" />
+        <img v-if="siteConfig.showLogo" :src="siteConfig.logoUrl || '/images/logo.png'" alt="Logo" class="site-logo-img" />
 
         {{ siteConfig.siteName }}
 

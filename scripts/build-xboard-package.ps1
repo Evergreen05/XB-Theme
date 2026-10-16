@@ -3,7 +3,7 @@
 param(
     [switch]$SkipBuild,          # 跳过 npm run build（dist 已最新时）
     [string]$ThemeName = "EZTheme",
-    [string]$Version = "2.5.2",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
+    [string]$Version = "2.5.3",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
     [string]$ApiUrlMode = "auto" # auto=跟随当前域名 | static=写死 staticBaseUrl
 )
 
@@ -48,7 +48,11 @@ $settingsScript = $nl +
     '    <script>' + $nl +
     '        window.EZ_THEME_SETTINGS = {!! json_encode($theme_config ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!};' + $nl +
     '    </script>'
-$html = [regex]::Replace($html, '<head(\s[^>]*)?>', { param($m) $m.Value + $settingsScript }, 1)
+$faviconScript = $nl +
+    '    <script>' + $nl +
+    '        (function(){var f=document.querySelector(''link[rel~="icon"]'');var u={!! json_encode($theme_config[''ez_logo_url''] ?? '''', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!};if(f&&u){f.href=u;}})();' + $nl +
+    '    </script>'
+$html = [regex]::Replace($html, '<head(\s[^>]*)?>', { param($m) $m.Value + $settingsScript + $faviconScript }, 1)
 
 # 3.4 </body> 前注入后台可填的自定义 HTML（公告条 / 统计代码等）
 # 键名用平键 ez_custom_html（field_name 不允许点号），兼容旧点号键；$theme_config 必须转义防 PowerShell 插值
@@ -85,6 +89,10 @@ $config = @{
             placeholder = "首次访问的明暗模式"
             select_options = @{ "light" = "浅色"; "dark" = "深色" }
             default_value = "light"
+        }
+        @{
+            label = "Logo 图片地址"; field_name = "ez_logo_url"; field_type = "input"
+            placeholder = "LOGO 图片 URL，留空则使用主题内置 Logo"; default_value = ""
         }
         @{
             label = "站点名称"; field_name = "ez_site_name"; field_type = "input"

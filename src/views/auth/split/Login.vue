@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="login-view-container">
     <div class="auth-split-container">
 
@@ -155,7 +155,7 @@ import { validateEmail, validateRequired } from '@/utils/validators';
 
 import DomainAuthAlert from '@/components/common/DomainAuthAlert.vue';
 import { handleTokenLogin, hasVerifyToken } from '@/utils/tokenLogin';
-import { AUTH_LAYOUT_CONFIG, SITE_CONFIG, AUTH_CONFIG } from '@/utils/baseConfig';
+import { AUTH_LAYOUT_CONFIG, SITE_CONFIG, AUTH_CONFIG , getLogoUrl } from '@/utils/baseConfig';
 import AuthPopup from '@/components/auth/AuthPopup.vue';
 import { shouldShowAuthPopup } from '@/utils/authPopupState';
 import { useNavigator } from "@/composables/useNavigator";
@@ -180,7 +180,7 @@ export default {
     const { showToast } = useToast();
     const { goTo } = useNavigator()
 
-    const logoPath = ref('./images/logo.png');
+    const logoPath = ref(getLogoUrl());
     const handleLogoError = () => {
       logoPath.value = '/images/logo.png';
     };

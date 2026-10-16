@@ -1,4 +1,4 @@
-﻿<template>
+<template>
 
   <div class="forgot-password-view-container">
 
@@ -416,7 +416,7 @@ import { resetPassword, sendEmailVerify, checkLoginStatus, getWebsiteConfig } fr
 
 import DomainAuthAlert from '@/components/common/DomainAuthAlert.vue';
 
-import { CAPTCHA_CONFIG, AUTH_LAYOUT_CONFIG, SITE_CONFIG, AUTH_CONFIG } from '@/utils/baseConfig';
+import { CAPTCHA_CONFIG, AUTH_LAYOUT_CONFIG, SITE_CONFIG, AUTH_CONFIG , getLogoUrl } from '@/utils/baseConfig';
 
 import AuthPopup from '@/components/auth/AuthPopup.vue';
 
@@ -567,7 +567,7 @@ export default {
 
 
 
-    const logoPath = ref('./images/logo.png');
+    const logoPath = ref(getLogoUrl());
 
     const handleLogoError = () => {
 

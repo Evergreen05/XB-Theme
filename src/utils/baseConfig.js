@@ -14,6 +14,7 @@ import {getAvailableApiUrl} from '@/utils/apiAvailabilityChecker';
 const EZ_FIELD_MAP = {
     ez_primary_color: 'DEFAULT_CONFIG.primaryColor',
     ez_default_theme: 'DEFAULT_CONFIG.defaultTheme',
+    ez_logo_url: 'SITE_CONFIG.logoUrl',
     ez_site_name: 'SITE_CONFIG.siteName',
     ez_site_description: 'SITE_CONFIG.siteDescription',
     ez_copyright: 'SITE_CONFIG.copyright',
@@ -300,6 +301,9 @@ const DEFAULT_SITE_CONFIG = {
     siteDescription: 'EZ UI',
     copyright: `© ${new Date().getFullYear()} EZ THEME. All Rights Reserved.`,
 
+    // 后台可配置的 Logo 图片地址（留空则用包内 /images/logo.png）
+    logoUrl: '',
+
     // 是否显示标题中的网站Logo (true=显示, false=隐藏)
     showLogo: true,
 
@@ -320,6 +324,9 @@ const DEFAULT_SITE_CONFIG = {
 };
 
 export const SITE_CONFIG = mergeDeep(DEFAULT_SITE_CONFIG, getConfig('SITE_CONFIG'));
+
+// Logo 图片地址：后台配置了就用后台的，否则回落到包内 /images/logo.png
+export const getLogoUrl = () => SITE_CONFIG.logoUrl || '/images/logo.png';
 
 // 默认语言和主题配置
 const DEFAULT_BASE_CONFIG = {

@@ -3,7 +3,7 @@
 param(
     [switch]$SkipBuild,          # 跳过 npm run build（dist 已最新时）
     [string]$ThemeName = "EZTheme",
-    [string]$Version = "2.5.4",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
+    [string]$Version = "2.5.5",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
     [string]$ApiUrlMode = "auto" # auto=跟随当前域名 | static=写死 staticBaseUrl
 )
 
@@ -47,6 +47,7 @@ $nl = [Environment]::NewLine
 $settingsScript = $nl +
     '    <script>' + $nl +
     '        window.EZ_THEME_SETTINGS = {!! json_encode($theme_config ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!};' + $nl +
+    '        window.__THEME_ROOT__ = ''/theme/{{ $theme }}'';' + $nl +
     '    </script>'
 $faviconScript = $nl +
     '    <script>' + $nl +

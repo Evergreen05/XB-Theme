@@ -324,10 +324,21 @@ const DEFAULT_SITE_CONFIG = {
     customLandingPage: ''
 };
 
+// 主题静态资源根路径。打包脚本会在 blade 注入 window.__THEME_ROOT__（如 /theme/EZTheme），
+// 源码 dev 模式下没有注入，回落 /theme/Xboard 占位（dev 下资源本就在根路径，见 getThemeAssetUrl 兜底）
+const THEME_ASSET_BASE = (typeof window !== 'undefined' && window.__THEME_ROOT__) ? window.__THEME_ROOT__ : '';
+
+// 主题内静态资源 URL（dev 模式返回原样相对路径，部署后补主题前缀）
+export const getThemeAssetUrl = (p) => {
+    if (!THEME_ASSET_BASE) return p;
+    return THEME_ASSET_BASE + '/' + String(p).replace(/^\.?\/+/, '');
+};
+
+
 export const SITE_CONFIG = mergeDeep(DEFAULT_SITE_CONFIG, getConfig('SITE_CONFIG'));
 
 // Logo 图片地址：后台配置了就用后台的，否则回落到包内 /images/logo.png
-export const getLogoUrl = () => SITE_CONFIG.logoUrl || '/images/logo.png';
+export const getLogoUrl = () => SITE_CONFIG.logoUrl || getThemeAssetUrl('images/logo.png');
 
 // 默认语言和主题配置
 const DEFAULT_BASE_CONFIG = {

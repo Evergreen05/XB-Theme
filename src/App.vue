@@ -4,7 +4,7 @@
     <div class="static-layout" v-if="$route.meta.requiresAuth">
       <!-- 网站名称 -->
       <div class="site-logo">
-        <img v-if="siteConfig.showLogo" :src="siteConfig.logoUrl || '/images/logo.png'" alt="Logo" class="site-logo-img" />
+        <img v-if="siteConfig.showLogo" :src="siteConfig.logoUrl || logoFallback" alt="Logo" class="site-logo-img" />
         {{ siteConfig.siteName }}
       </div>
       
@@ -79,7 +79,7 @@ import { onMounted, onUnmounted, ref, computed, provide, watch } from 'vue';
 import { useStore } from '@/store/useLegacyStore';
 import { useTheme } from '@/composables/useTheme';
 import { useRouter, useRoute } from 'vue-router';
-import { SITE_CONFIG, PROFILE_CONFIG, CUSTOMER_SERVICE_CONFIG } from '@/utils/baseConfig';
+import { SITE_CONFIG, PROFILE_CONFIG, CUSTOMER_SERVICE_CONFIG, getThemeAssetUrl } from '@/utils/baseConfig';
 import { checkAuthAndReloadMessages } from '@/utils/authUtils';
 import { checkUserLoginStatus } from '@/api/auth';
 import { handleRedirectPath } from '@/utils/redirectHandler';
@@ -254,6 +254,7 @@ export default {
       username,
       avatarUrl,
       siteConfig,
+      logoFallback: getThemeAssetUrl('images/logo.png'),
       PROFILE_CONFIG,
       cachedRoutes,
       customerServiceConfig

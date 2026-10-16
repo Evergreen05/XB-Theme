@@ -38,7 +38,7 @@
 
       <div class="site-title">
 
-        <img v-if="siteConfig.showLogo" :src="siteConfig.logoUrl || '/images/logo.png'" alt="Logo" class="site-logo-img" />
+        <img v-if="siteConfig.showLogo" :src="siteConfig.logoUrl || logoFallback" alt="Logo" class="site-logo-img" />
 
         {{ siteConfig.siteName }}
 
@@ -86,7 +86,7 @@ import { useStore } from '@/store/useLegacyStore';
 
 import { useI18n } from 'vue-i18n';
 
-import { SITE_CONFIG, DEFAULT_CONFIG } from '@/utils/baseConfig';
+import { SITE_CONFIG, DEFAULT_CONFIG, getThemeAssetUrl } from '@/utils/baseConfig';
 
 
 import ThemeToggle from '@/components/common/ThemeToggle.vue';
@@ -271,6 +271,8 @@ export default {
       landingPageRef,
 
       siteConfig,
+
+      logoFallback: getThemeAssetUrl('images/logo.png'),
 
       defaultConfig,
 

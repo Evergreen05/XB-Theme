@@ -1,4 +1,4 @@
-﻿<!-- 资源预加载组件 -->
+<!-- 资源预加载组件 -->
 <template>
   <!-- 这个组件不会显示任何内容，仅用于资源预加载 -->
   <div class="resource-preloader" style="display: none;">
@@ -21,7 +21,7 @@
 import { onMounted, ref, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import preloadManager from '@/utils/preloadManager';
-import { CUSTOMER_SERVICE_CONFIG, AUTH_LAYOUT_CONFIG } from '@/utils/baseConfig';
+import { CUSTOMER_SERVICE_CONFIG, AUTH_LAYOUT_CONFIG, getThemeAssetUrl } from '@/utils/baseConfig';
 
 export default {
   name: 'ResourcePreloader',
@@ -36,7 +36,7 @@ export default {
     const isCustomerServiceEnabled = CUSTOMER_SERVICE_CONFIG && CUSTOMER_SERVICE_CONFIG.enabled;
 
     const preloadImages = ref([
-      '/images/logo.png'
+      getThemeAssetUrl('images/logo.png')
     ]);
     
     const preloadQueue = ref([]);

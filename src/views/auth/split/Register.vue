@@ -615,7 +615,7 @@ import { register, checkLoginStatus, getWebsiteConfig, sendEmailVerify } from '@
 
 import DomainAuthAlert from '@/components/common/DomainAuthAlert.vue';
 
-import { CAPTCHA_CONFIG, AUTH_LAYOUT_CONFIG, SITE_CONFIG, AUTH_CONFIG , getLogoUrl } from '@/utils/baseConfig';
+import { CAPTCHA_CONFIG, AUTH_LAYOUT_CONFIG, SITE_CONFIG, AUTH_CONFIG , getLogoUrl, getThemeAssetUrl } from '@/utils/baseConfig';
 
 import AuthPopup from '@/components/auth/AuthPopup.vue';
 
@@ -774,7 +774,7 @@ export default {
 
     const handleLogoError = () => {
 
-      logoPath.value = '/images/logo.png';
+      logoPath.value = getThemeAssetUrl('images/logo.png');
 
     };
 

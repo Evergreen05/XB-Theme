@@ -24,6 +24,7 @@ const EZ_FIELD_MAP = {
     ez_custom_html: 'EZ_CUSTOM_HTML',
     // 开关与公告
     ez_show_giftcard: 'PROFILE_CONFIG.showGiftCardRedeem',
+    ez_show_recent_devices: 'PROFILE_CONFIG.showRecentDevices',
     ez_show_wallet_entry: 'WALLET_CONFIG.showWalletEntry',
     ez_show_recharge_card: 'WALLET_CONFIG.showRechargeCard',
     ez_service_url: 'CUSTOMER_SERVICE_CONFIG.customUrl',
@@ -45,6 +46,7 @@ const EZ_FIELD_MAP = {
 // 后台 select 存的是字符串 "true"/"false"，需转成真布尔（否则 v-if="false" 恒真）
 const EZ_BOOLEAN_FIELDS = new Set([
     'ez_show_giftcard',
+    'ez_show_recent_devices',
     'ez_show_wallet_entry',
     'ez_show_recharge_card',
     'ez_announcement_enabled',
@@ -412,7 +414,7 @@ const DEFAULT_PROFILE_CONFIG = {
     showGiftCardRedeem: false,
 
     // 是否显示最近登录设备栏目 (true=显示, false=隐藏)
-    showRecentDevices: true
+    showRecentDevices: false
 };
 
 export const PROFILE_CONFIG = mergeDeep(DEFAULT_PROFILE_CONFIG, getConfig('PROFILE_CONFIG'));

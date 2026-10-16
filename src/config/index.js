@@ -336,7 +336,7 @@ export const config  = {
         showGiftCardRedeem: true, // 礼品卡兑换（Xboard 亦支持 /api/v1/passport/gift-card 系列接口）
 
         // 是否显示最近登录设备栏目 (true=显示, false=隐藏)
-        showRecentDevices: true
+        showRecentDevices: false
     },
 
     // =======================================================

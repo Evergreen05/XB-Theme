@@ -3,7 +3,7 @@
 param(
     [switch]$SkipBuild,          # 跳过 npm run build（dist 已最新时）
     [string]$ThemeName = "EZTheme",
-    [string]$Version = "2.5.6",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
+    [string]$Version = "2.5.7",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
     [string]$ApiUrlMode = "auto" # auto=跟随当前域名 | static=写死 staticBaseUrl
 )
 
@@ -129,6 +129,12 @@ $config = @{
         @{
             label = "节点详情按钮"; field_name = "ez_node_detail_btn"; field_type = "select"
             placeholder = '节点卡片右上角的三个点按钮（点击弹出节点详情）'
+            select_options = @{ "true" = "显示"; "false" = "隐藏" }
+            default_value = "false"
+        }
+        @{
+            label = "近期登录设备"; field_name = "ez_show_recent_devices"; field_type = "select"
+            placeholder = '用户中心的"近期登录设备"卡片（后端不记录设备/IP，默认隐藏）'
             select_options = @{ "true" = "显示"; "false" = "隐藏" }
             default_value = "false"
         }

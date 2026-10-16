@@ -3,7 +3,7 @@
 param(
     [switch]$SkipBuild,          # 跳过 npm run build（dist 已最新时）
     [string]$ThemeName = "EZTheme",
-    [string]$Version = "2.5.5",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
+    [string]$Version = "2.5.6",  # 必须高于服务器已装版本，否则上传器拒绝覆盖
     [string]$ApiUrlMode = "auto" # auto=跟随当前域名 | static=写死 staticBaseUrl
 )
 
@@ -51,7 +51,7 @@ $settingsScript = $nl +
     '    </script>'
 $faviconScript = $nl +
     '    <script>' + $nl +
-    '        (function(){var f=document.querySelector(''link[rel~="icon"]'');var u={!! json_encode($theme_config[''ez_logo_url''] ?? '''', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!};if(f&&u){f.href=u;}})();' + $nl +
+    '        (function(){var a=function(){var f=document.querySelector(''link[rel~="icon"]'');var u={!! json_encode($theme_config[''ez_logo_url''] ?? '''', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!};if(f&&u){f.href=u;}};if(document.readyState===''loading''){document.addEventListener(''DOMContentLoaded'',a);}else{a();}})();' + $nl +
     '    </script>'
 $html = [regex]::Replace($html, '<head(\s[^>]*)?>', { param($m) $m.Value + $settingsScript + $faviconScript }, 1)
 
